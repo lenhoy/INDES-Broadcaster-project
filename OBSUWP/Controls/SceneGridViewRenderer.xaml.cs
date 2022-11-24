@@ -44,15 +44,23 @@ namespace OBSUWP.Controls
         internal SceneGridViewRenderer(Scene scene)
         {
             this.InitializeComponent();
+
             GenerateXAML(scene);
         }
 
+        /// <summary>
+        /// Generates the XAML interface used by the template in the gridview
+        /// </summary>
+        /// <param name="scene"></param>
         private void GenerateXAML(Scene scene)
         {
+            // Set the size of the XAML clipping mask to the given size this control
+            clippingGeometry.Rect = new Rect(0, 0, this.Width, this.Height);
+
             //TODO: does this copy the list or pass it by reference?
             ObservableCollection<ISource> sources = scene.Sources;
 
-            // Add each source to the cancas using the apropriate XAML for the type
+            // Adds source to the canvas using the apropriate XAML for the type
             foreach(ISource source in sources)
             {
                 // determine the type of ISource implementation
@@ -62,7 +70,8 @@ namespace OBSUWP.Controls
                         MediaPlayerElement mediaPlayerElement = new MediaPlayerElement();
                         mediaPlayerElement.AutoPlay = true;
                         mediaPlayerElement.Height = this.Height;
-                        mediaPlayerElement.Stretch = Stretch.UniformToFill;
+                        
+                        mediaPlayerElement.Stretch = Stretch.Uniform;
                         try
                         {
                             mediaPlayerElement.Source = MediaSource.CreateFromUri(new Uri(source.Output));

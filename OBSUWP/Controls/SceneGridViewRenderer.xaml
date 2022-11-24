@@ -10,8 +10,15 @@
     d:DesignWidth="400">
 
     <Grid>
-        <Canvas x:Name="myCanvas">
-        </Canvas>
+        <!-- Border used to make a clippingmask, hiding any content outside the canvas -->
+        <Border BorderThickness="4" BorderBrush="Yellow">
+            <Border.Clip>
+                <RectangleGeometry x:Name="clippingGeometry"></RectangleGeometry>
+            </Border.Clip>
+
+            <Canvas x:Name="myCanvas">
+            </Canvas>
+        </Border>
     </Grid>
     
 </UserControl>
