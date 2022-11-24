@@ -1,0 +1,35 @@
+﻿<Page
+    x:Class="OBS_UWP.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:OBS_UWP"
+    xmlns:localContr="using:OBS_UWP.Controls"
+    xmlns:localClasses="using:OBS_UWP.Classes"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:toolkit="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Page.Resources>
+        <DataTemplate x:Key="SceneTemplate" x:DataType="localClasses:Scene">
+
+        </DataTemplate>
+    </Page.Resources>
+    
+    <Grid>
+
+        <!--
+            <MediaPlayerElement x:Name="mediaPlayerElement" HorizontalAlignment="Stretch"
+                            AutoPlay="False" Canvas.Left="50" Width="1000" AreTransportControlsEnabled="False"
+                            Source="http://amssamples.streaming.mediaservices.windows.net/49b57c87-f5f3-48b3-ba22-c55cfdffa9cb/Sintel.ism/manifest(format=m3u8-aapl)" 
+                            />
+        -->
+        <GridView
+            x:Name="sceneGridView"
+            ItemTemplate="x:Bind "
+            />
+        
+
+    </Grid>
+</Page>
