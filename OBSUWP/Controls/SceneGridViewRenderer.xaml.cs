@@ -70,6 +70,7 @@ namespace OBSUWP.Controls
                         MediaPlayerElement mediaPlayerElement = new MediaPlayerElement();
                         mediaPlayerElement.AutoPlay = true;
                         mediaPlayerElement.Height = this.Height;
+                        mediaPlayerElement.HorizontalAlignment = HorizontalAlignment.Center;
                         
                         mediaPlayerElement.Stretch = Stretch.Uniform;
                         try
