@@ -12,9 +12,9 @@
 
     <Page.Resources>
         <DataTemplate x:Name="sceneGridTemplate" x:DataType="localDataClasses:Scene">
-            <locControls:SceneGridViewRenderer InputScene="{x:Bind Self}"
+            <locControls:SceneRenderer InputScene="{x:Bind Self}"
                                                Width="240" Height="135"
-                                               ></locControls:SceneGridViewRenderer>
+                                               ></locControls:SceneRenderer>
         </DataTemplate>
     </Page.Resources>
     
@@ -29,12 +29,24 @@
             <RowDefinition />
         </Grid.RowDefinitions>
         <!--#endregion-->
-        
-        
-        
+
         <GridView Grid.Column="0" Grid.Row="1"
                   ItemsSource="{x:Bind VM.Scenes}"
-                  ItemTemplate="{StaticResource sceneGridTemplate}">
+                  ItemTemplate="{StaticResource sceneGridTemplate}"
+                  SelectionMode="None"
+                  IsItemClickEnabled="True"
+                  ItemClick="GridView_ItemClick">
         </GridView>
+
+        <!-- Live View -->
+        <locControls:SceneRenderer x:Name="liveView" Grid.Column="1" Grid.Row="0"
+                                   InputScene="{x:Bind VM.LiveScene, Mode=OneWay}">
+        </locControls:SceneRenderer>
+        
+        <!-- Preview window -->
+        <locControls:SceneRenderer x:Name="preView" Grid.Column="0" Grid.Row="0"
+                                   InputScene="{x:Bind VM.PreviewScene, Mode=OneWay}">
+        </locControls:SceneRenderer>
+        
     </Grid>
 </Page>

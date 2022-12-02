@@ -11,7 +11,7 @@ using OBSUWP.Inferfaces;
 
 namespace OBSUWP
 {
-    internal class MainPageViewModel: ObservableObject
+    internal partial class MainPageViewModel: ObservableObject
     {
         public MainPageViewModel()
         {
@@ -21,6 +21,14 @@ namespace OBSUWP
         // observable list of scenes
         public ObservableCollection<Scene> Scenes { get; set; } = new ObservableCollection<Scene>();
 
+        // The selected Live Scene
+        [ObservableProperty]
+        private Scene liveScene;
+
+        // The selected preview scene
+        [ObservableProperty]
+        private Scene previewScene;
+
         public void InitializeScenes()
         {
             Collection<ISource> sources = new ObservableCollection<ISource>();
@@ -28,7 +36,7 @@ namespace OBSUWP
             Scene temp = new Scene(sources);
             this.Scenes.Add(temp);
             Scene temp2 = new Scene();
-            temp2.AddSource(new VideoSource("http://amssamples.streaming.mediaservices.windows.net/49b57c87-f5f3-48b3-ba22-c55cfdffa9cb/Sintel.ism/manifest(format=m3u8-aapl)"));
+            temp2.AddSource(new VideoSource("C:\\Users\\lenna\\Downloads\\FunCom interview-20220309_104348-Meeting Recording.mp4"));
             this.Scenes.Add(temp2);
         }
     }
