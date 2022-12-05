@@ -9,6 +9,7 @@ namespace OBSUWP.Inferfaces
     public interface ISource
     {
         string GetOutput();
-        string Output { get; }
+        object Output { get; }
+        string Type { get; }
     }
 }

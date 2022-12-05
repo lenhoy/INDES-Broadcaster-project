@@ -1,4 +1,8 @@
-﻿using System;
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
+using OBSUWP.Inferfaces;
+using OBSUWP.Services;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -22,15 +26,42 @@ namespace OBSUWP
     /// </summary>
     sealed partial class App : Application
     {
+
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
         /// </summary>
         public App()
         {
+            Services = ConfigureServices();
             this.InitializeComponent();
             this.Suspending += OnSuspending;
         }
+
+        #region Services
+        /// <summary>
+        /// Gets the current <see cref="App"/> instance in use
+        /// </summary>
+        public new static App Current => (App)Application.Current;
+
+        /// <summary>
+        /// Gets the <see cref="IServiceProvider"/> instance to resolve application services.
+        /// </summary>
+        public IServiceProvider Services { get; }
+
+        /// <summary>
+        /// Configures the services for the application.
+        /// </summary>
+        private static IServiceProvider ConfigureServices()
+        {
+            var services = new ServiceCollection();
+
+            services.AddSingleton<ICamerahelperService, CameraHelperService>();
+
+            return services.BuildServiceProvider();
+
+        }
+        #endregion
 
         /// <summary>
         /// Invoked when the application is launched normally by the end user.  Other entry points
@@ -57,6 +88,7 @@ namespace OBSUWP
 
                 // Place the frame in the current Window
                 Window.Current.Content = rootFrame;
+
             }
 
             if (e.PrelaunchActivated == false)
@@ -71,6 +103,7 @@ namespace OBSUWP
                 // Ensure the current window is active
                 Window.Current.Activate();
             }
+                
         }
 
         /// <summary>

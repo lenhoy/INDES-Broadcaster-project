@@ -12,12 +12,19 @@
     <Grid>
         <!-- Border used to make a clippingmask, hiding any content outside the canvas -->
         <Border x:Name="clippingBorder" BorderThickness="4" BorderBrush="Yellow">
+            <StackPanel>
 
-            <Canvas x:Name="myCanvas">
                 <TextBlock x:Name="defaultText" Text="Please Select a Scene"
-                           HorizontalAlignment="Center" VerticalAlignment="Center">
+                        HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,-3" RenderTransformOrigin="0.5,0.5">
+                    <TextBlock.Projection>
+                        <PlaneProjection LocalOffsetY="120"/>
+                    </TextBlock.Projection>
                 </TextBlock>
-            </Canvas>
+
+                <Canvas x:Name="myCanvas">
+                </Canvas>
+                
+            </StackPanel>
         </Border>
     </Grid>
     

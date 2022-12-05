@@ -28,34 +28,23 @@ namespace OBSUWP
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        internal MainPageViewModel VM { get; }
+
         public MainPage()
         {
             this.InitializeComponent();
-            this.VM = new MainPageViewModel();
-            //VM.PropertyChanged += VM_PropertyChanged;
+            DataContext = VM = new MainPageViewModel();
 
         }
-        internal MainPageViewModel VM { get; set; }
 
         private void GridView_ItemClick(object sender, ItemClickEventArgs e)
         {
-            //VM.SelectedScene = (Scene) e.ClickedItem;
-            //preView.InputScene = (Scene) e.ClickedItem;
             VM.PreviewScene = (Scene)e.ClickedItem;
         }
 
-        private void VM_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void MenuFlyoutItem_Click(object sender, RoutedEventArgs e)
         {
-            // If the SelectedScene has changed update the liveView
-            if (e.PropertyName == nameof(VM.LiveScene))
-            {
-                liveView.InputScene = (Scene) VM.LiveScene;
-            }
 
-            if (e.PropertyName == nameof(VM.PreviewScene))
-            {
-                preView.InputScene = (Scene) VM.PreviewScene;
-            }
         }
     }
 }

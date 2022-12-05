@@ -11,11 +11,11 @@ using Windows.Graphics.Imaging;
 
 namespace OBSUWP.DataClasses
 {
-    public class Scene : ObservableObject
+    public partial class Scene : ObservableObject
     {
         public Scene() 
         {
-            _sources = new ObservableCollection<ISource>();
+            sources = new ObservableCollection<ISource>();
         }
         public Scene(Collection<ISource> sources)
         {
@@ -26,31 +26,28 @@ namespace OBSUWP.DataClasses
 
         #region Sources
         // get the sources / set all soures at once
-        private ObservableCollection<ISource> _sources;
-        public ObservableCollection<ISource> Sources
-        {
-            get => _sources;
-            set => SetProperty<ObservableCollection<ISource>>(ref _sources, value);
-        }
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(Self))] // TODO find out how to make sure scene if deleted
+        private ObservableCollection<ISource> sources;
 
         public ISource GetSource(int index)
         {
-            return _sources[index];
+            return sources[index];
         }
 
         public void AddSource(ISource source)
         {
-            _sources.Add(source);
+            sources.Add(source);
         }
 
         public void ChangeSource(int index, ISource newSource)
         {
-            _sources[index] = newSource;
+            sources[index] = newSource;
         }
 
         // TODO: is this needed?
         public ref ObservableCollection<ISource> GetSourcesByRef(){
-            return ref _sources;
+            return ref sources;
         }
         #endregion Sources
     }

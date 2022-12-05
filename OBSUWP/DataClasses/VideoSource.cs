@@ -10,27 +10,29 @@ using Windows.Storage.Streams;
 
 namespace OBSUWP.DataClasses
 {
-    internal class VideoSource : ObservableObject, ISource
+    internal partial class VideoSource : ObservableValidator, ISource
     {
-        private string _path;
+        [ObservableProperty]
         [Required]
         [Url]
-        public string Path
-        {
-            get { return _path; }
-            set { SetProperty<string>(ref _path, value); }
-        }
+        private string path;
 
         public VideoSource(string path)
         {
-            this._path = path;
+            this.path = path;
         }
 
-        public string Output {get => _path;} 
+        /// <summary>
+        /// <returns>Cast to <see cref="String"/></returns>
+        /// </summary>
+        public object Output => path;
+
+        public string Type => this.GetType().Name;
 
         public string GetOutput()
         {
-            return _path;
+            return path;
         }
+
     }
 }
