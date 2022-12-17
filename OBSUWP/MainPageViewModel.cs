@@ -1,22 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CommunityToolkit.Mvvm;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Toolkit.Uwp.Helpers;
+using OBSUWP.Controls;
 using OBSUWP.DataClasses;
 using OBSUWP.Inferfaces;
-using Windows.UI.Xaml.Controls;
+using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace OBSUWP
 {
-    internal partial class MainPageViewModel: ObservableObject
+
+    internal partial class MainPageViewModel : ObservableObject
     {
+        // Static ViewModel to access from controls
+        public static MainPageViewModel Current { get; private set; }
+
         // observable list of scenes
         public ObservableCollection<Scene> Scenes { get; set; } = new ObservableCollection<Scene>();
 
@@ -28,6 +26,12 @@ namespace OBSUWP
         [ObservableProperty]
         private Scene previewScene;
 
+        // Delegate for the event
+        public delegate void Notify(); 
+        // Event to trigger a redraw of UI in the view
+        public event Notify SourcesChanged; 
+
+
 
         /// <summary>
         /// Construct the viewmodel
@@ -36,6 +40,7 @@ namespace OBSUWP
         {
             //initialize scenes
             InitializeScenes();
+            Current = this;
 
         }
         #region Commands
@@ -48,17 +53,39 @@ namespace OBSUWP
         [RelayCommand]
         private void AddSourceToPreviewScene(ISource source)
         {
-            
+
         }
 
         // Remove Source
         [RelayCommand]
         private void RemoveSourceFromPreviewScene(ISource source)
         {
+
+            // remove the source from the version of the Scene in the gridView
+            Scene gridScene = Scenes.Where(s => s.Equals(previewScene)).First();
+            Scenes[Scenes.IndexOf(gridScene)].Sources.Remove(source);
+            foreach (Scene scene in Scenes)
+            {
+                if (scene.Equals(previewScene))
+                {
+                    // get the sources and remove the argument source
+                    scene.Sources.Remove(source);
+                }
+            }
+
+            // Remove the source from the previewScene
             previewScene.Sources.Remove(source);
+
+            
+            OnSourcesChanged();            
         }
 
         #endregion
+
+        protected virtual void OnSourcesChanged()
+        {
+            SourcesChanged?.Invoke();
+        }
 
         public async void InitializeScenes()
         {
@@ -77,6 +104,15 @@ namespace OBSUWP
             inputFrameSourceGroup = availableFramSourceGroups.ToArray()[1];
             scene3.AddSource(new LocalCameraSource(inputFrameSourceGroup));
             this.Scenes.Add(scene3);
+
+            var scene4 = new Scene();
+            inputFrameSourceGroup = availableFramSourceGroups.ToArray()[1];
+            scene4.AddSource(new LocalCameraSource(inputFrameSourceGroup));
+            this.Scenes.Add(scene3);
+
+            var scene5 = new Scene();
+            scene5.AddSource(new VideoSource("http://202.245.13.81/"));
+            this.Scenes.Add(scene5);
         }
     }
 }
