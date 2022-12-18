@@ -17,6 +17,7 @@
             <locControls:SceneRenderer Sources="{x:Bind Sources, Mode=OneWay}"
                                        Width="192" Height="108">
             </locControls:SceneRenderer>
+            
         </DataTemplate>
     </Page.Resources>
 
@@ -33,32 +34,53 @@
         <!--#endregion-->
         <Grid Grid.Column="0" Grid.Row="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="60" />
                 <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="80" />
             </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="80" />
+            </Grid.RowDefinitions>
 
-            <Border Grid.Column="0"
-                    Background="LightGray"
-                    Margin="5"
-                    CornerRadius="10">
-                <AppBarButton Height="40" Width="40"
-                              HorizontalAlignment="Center"
-                              Margin="0 5"
-                              Icon="Add" 
-                              Style="{ThemeResource AccentButtonStyle}"
-                              CornerRadius="25"></AppBarButton>
-            </Border>
-
-            <GridView Grid.Column="1"
+            <GridView Grid.Column="0" Grid.Row="0"
+                      Grid.ColumnSpan="2" Grid.RowSpan="2"
+                      x:Name="SceneGridView"
+                      Background="{ThemeResource SystemControlTransparentRevealBackgroundBrush}"
                       ItemsSource="{x:Bind VM.Scenes}"
                       ItemTemplate="{StaticResource sceneGridTemplate}"
-                      SelectionMode="None"
+                      SelectionMode="Single"
                       IsItemClickEnabled="True"
+                      IsRightTapEnabled="True"
                       ItemClick="GridView_ItemClick"
+                      RightTapped="GridView_RightTapped"
                       CanReorderItems="True"
-                      CanDragItems="True">
+                      CanDragItems="True"
+                      AllowDrop="True">
+                <GridView.Resources>
+                    <MenuFlyout x:Name="gridRightClickflyout">
+                        <MenuFlyout.Items>
+                            <MenuFlyoutItem Text="Delete Scene" Click="SceneGridViewFlyoutItem_RemoveClick" />
+                        </MenuFlyout.Items>
+                    </MenuFlyout>
+                </GridView.Resources>
             </GridView>
-            
+
+            <Button Grid.Column="1"
+                          Grid.Row="1"
+                          Height="60"
+                          Width="60"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Center"
+                          CornerRadius="70"
+                          Background="{ThemeResource SystemAccentColor}"
+                          ToolTipService.ToolTip="Add a new Scene"
+                          Command="{x:Bind VM.AddSceneCommand}"
+                          >
+                <StackPanel>
+                    <SymbolIcon Symbol="Add" />
+                </StackPanel>
+            </Button>
+
         </Grid>
 
         <!-- Live View -->
@@ -80,42 +102,40 @@
                                        IsMuted="false">
             </locControls:SceneRenderer>
 
-            <StackPanel Grid.Row="1" Orientation="Horizontal"
-                        Margin="5"
-                        CornerRadius="10"
-                        Background="{ThemeResource SystemControlBackgroundBaseLowBrush}"
+            <CommandBar Grid.Row="1"
+                        VerticalContentAlignment="Center"
+                        HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" RequestedTheme="Default"
+                        OverflowButtonVisibility="Collapsed"
                         >
-                <AppBarButton Width="38" Height="48"
-                              VerticalAlignment="Center"
-                              Margin="5 0 5 0"
-                              CornerRadius="50"
+                <AppBarButton Width="50"
                               Icon="Add"
-                              Background="DarkRed"
+                              Background="{ThemeResource InkToolbarButtonHoverBackgroundThemeBrush}"
                               >
                     <AppBarButton.Flyout>
                         <MenuFlyout>
                             <MenuFlyoutItem Text="Local File" 
                                             Click="MenuFlyoutItem_Click"
-                                            Tag="localFile"/>
+                                            Tag="LocalFile"/>
                             <MenuFlyoutItem Text="Local Camera" 
                                             Click="MenuFlyoutItem_Click"
-                                            Tag="localCamera"/>
+                                            Tag="LocalCamera"/>
                             <MenuFlyoutSeparator />
                             <MenuFlyoutItem Text="Online Stream" 
                                             Click="MenuFlyoutItem_Click"
-                                            Tag="onlineStream"/>
+                                            Tag="OnlineStream"/>
                             <MenuFlyoutItem Text="IP Camera" 
                                             Click="MenuFlyoutItem_Click"
-                                            Tag="ipCamera"/>
+                                            Tag="IPCamera"/>
                         </MenuFlyout>
                     </AppBarButton.Flyout>
                 </AppBarButton>
-                <Button Style="{StaticResource ButtonRevealStyle}" Height="30" MinWidth="70"
-                        Content="{  x:Bind VM.PreviewScene.Sources[0].Type,
-                                    Mode=OneWay, 
-                                    FallbackValue='Select a scene'
-                        }">
-                    <Button.Flyout>
+                <AppBarButton Margin="5 0 5 0"
+                              VerticalAlignment="Center"
+                              MinWidth="80"
+                              Content="{  x:Bind VM.PreviewScene.Sources[0].Type,
+                                            Mode=OneWay, 
+                                            FallbackValue='Select a scene'}"> 
+                    <AppBarButton.Flyout>
                         <Flyout>
                             <StackPanel>
                                 <TextBlock Style="{ThemeResource BaseTextBlockStyle}" 
@@ -129,9 +149,15 @@
                                         Style="{ThemeResource AccentButtonStyle}"/>
                             </StackPanel>
                         </Flyout>
-                    </Button.Flyout>
-                </Button>
-            </StackPanel>
+                    </AppBarButton.Flyout>
+                </AppBarButton>
+                <AppBarSeparator />
+                <AppBarButton Margin="5 0 0 0"
+                              Content="Send to Live"
+                              Width="100"
+                              HorizontalAlignment="Right"
+                              Background="{ThemeResource SystemAccentColor}"/>
+            </CommandBar>
             
         </Grid>
         

@@ -1,5 +1,4 @@
-﻿using OBSUWP.Controls;
-using OBSUWP.DataClasses;
+﻿using OBSUWP.DataClasses;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -14,13 +13,16 @@ namespace OBSUWP
     {
         internal MainPageViewModel VM { get; }
 
+        // save rightclicked scene as context for scene deleted flyout click handler
+        private Scene rightClickedScene { get; set; }
+
         public MainPage()
         {
             this.InitializeComponent();
             DataContext = VM = new MainPageViewModel();
             // Subscribe to redraw scenes when the sources inside the scenes change
             // Hacky solution as I couldn't make it work 'normally'
-            VM.SourcesChanged += ReDrawScenes; 
+            VM.SourcesChanged += ReDrawScenes;
 
         }
 
@@ -29,10 +31,57 @@ namespace OBSUWP
             VM.PreviewScene = (Scene)e.ClickedItem;
         }
 
+        /// <summary>
+        /// Scene gridview item rightclick
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void GridView_RightTapped(object sender, Windows.UI.Xaml.Input.RightTappedRoutedEventArgs e)
+        {
+            // save the rightclicked scene so that the SceneGridViewFlyoutItem_RemoveClick can use it
+            rightClickedScene = (e.OriginalSource as FrameworkElement)?.DataContext as Scene;
+
+            GridView gridView = (GridView)sender;
+            // show the rightclick-meny at the clicked item
+            gridRightClickflyout.ShowAt(gridView, e.GetPosition(gridView));
+        }
+
+        /// <summary>
+        /// Add-button menuflyout click
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MenuFlyoutItem_Click(object sender, RoutedEventArgs e)
         {
+            // Get the tag from the clicked MenuFlyoutItem in the XAML
+            var item = sender as MenuFlyoutItem;
+            string typeString = (string)item.Tag;
 
-        }        
+            // switch to convert tag to SceneType
+            SceneType? typeEnum = null;
+            switch (typeString)
+            {
+                case "OnlineStream":
+                    typeEnum = SceneType.OnlineStream;
+                    break;
+                case "IPCamera":
+                    typeEnum = SceneType.IPCamera;
+                    break;
+                case "LocalCamera":
+                    typeEnum = SceneType.LocalCamera;
+                    break;
+                case "LocalFile":
+                    typeEnum = SceneType.LocalFile;
+                    break;
+                default:
+                    break;
+            }
+
+            if (typeEnum != null)
+            {
+                VM.AddSceneCommand.Execute(typeEnum);
+            }
+        }
 
         public void ReDrawScenes()
         {
@@ -40,5 +89,9 @@ namespace OBSUWP
             //preView.DrawUI();
         }
 
+        private void SceneGridViewFlyoutItem_RemoveClick(object sender, RoutedEventArgs e)
+        {
+            VM.RemoveSceneCommand.Execute(rightClickedScene);
+        }
     }
 }

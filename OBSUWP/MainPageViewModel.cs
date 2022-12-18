@@ -4,11 +4,27 @@ using Microsoft.Toolkit.Uwp.Helpers;
 using OBSUWP.Controls;
 using OBSUWP.DataClasses;
 using OBSUWP.Inferfaces;
+using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml;
+using static System.Net.Mime.MediaTypeNames;
+using System.ServiceModel.Channels;
+using Windows.UI.Popups;
+using System.Data;
 
 namespace OBSUWP
 {
+    enum SceneType
+    {
+        LocalCamera,
+        IPCamera,
+        LocalFile,
+        OnlineStream
+    }
 
     internal partial class MainPageViewModel : ObservableObject
     {
@@ -45,9 +61,75 @@ namespace OBSUWP
         }
         #region Commands
 
-        // Create Scene
+        // Add Scene
+        [RelayCommand] // TODO return task instead of void
+        private async void AddScene(SceneType type)
+        {
+            Scene scene = new Scene();
+            switch (type)
+            {
+                case SceneType.LocalCamera:
+                    // Get framesourcegroups and add camera source
+                    var availableFrameSourceGroups = await CameraHelper.GetFrameSourceGroupsAsync();
+                    var inputFrameSourceGroup = availableFrameSourceGroups.ToArray()[1];
+                    scene.AddSource(new LocalCameraSource(inputFrameSourceGroup));
+                    break;
+
+                case SceneType.IPCamera:
+                    Debug.Write("IPCamera not implemented");
+                    break;
+                case SceneType.LocalFile:
+                    break;
+                case SceneType.OnlineStream:
+                    try
+                    {
+                        string inputURI = await ShowAddDialogAsync("Enter stream URI");
+                        var _URICheck = new Uri(inputURI);
+                        scene.AddSource(new VideoSource(inputURI));
+                        
+                    }
+                    catch (Exception)
+                    {
+                        var dialog = new MessageDialog("URI probably wrong");
+                        await dialog.ShowAsync();
+                        return;
+                    }
+                    break;
+                default:
+                    break;
+            }
+            this.Scenes.Add(scene);
+        }
+
+        /// <summary>
+        /// Dialog for getting text input from user
+        /// </summary>
+        /// <param name="title"></param>
+        /// <returns></returns>
+        public static async Task<string> ShowAddDialogAsync(string title)
+        {
+            var inputTextBox = new TextBox { AcceptsReturn = false };
+            (inputTextBox as FrameworkElement).VerticalAlignment = VerticalAlignment.Bottom;
+            var dialog = new ContentDialog
+            {
+                Content = inputTextBox,
+                Title = title,
+                IsSecondaryButtonEnabled = true,
+                PrimaryButtonText = "Ok",
+                SecondaryButtonText = "Cancel"
+            };
+            if (await dialog.ShowAsync() == ContentDialogResult.Primary)
+                return inputTextBox.Text;
+            else
+                return "";
+        }
 
         // Delete Scene
+        [RelayCommand]
+        private async void RemoveScene(Scene scene)
+        {
+            this.Scenes.Remove(scene);
+        }
 
         // Add Source
         [RelayCommand]
@@ -95,18 +177,18 @@ namespace OBSUWP
             this.Scenes.Add(scene1);
 
             Scene scene2 = new Scene();
-            var availableFramSourceGroups = await CameraHelper.GetFrameSourceGroupsAsync();
-            var inputFrameSourceGroup = availableFramSourceGroups.FirstOrDefault();
+            var availableFrameSourceGroups = await CameraHelper.GetFrameSourceGroupsAsync();
+            var inputFrameSourceGroup = availableFrameSourceGroups.FirstOrDefault();
             scene2.AddSource(new LocalCameraSource(inputFrameSourceGroup));
             this.Scenes.Add(scene2);
 
             Scene scene3 = new Scene();
-            inputFrameSourceGroup = availableFramSourceGroups.ToArray()[1];
+            inputFrameSourceGroup = availableFrameSourceGroups.ToArray()[1];
             scene3.AddSource(new LocalCameraSource(inputFrameSourceGroup));
             this.Scenes.Add(scene3);
 
             var scene4 = new Scene();
-            inputFrameSourceGroup = availableFramSourceGroups.ToArray()[1];
+            inputFrameSourceGroup = availableFrameSourceGroups.ToArray()[1];
             scene4.AddSource(new LocalCameraSource(inputFrameSourceGroup));
             this.Scenes.Add(scene3);
 
