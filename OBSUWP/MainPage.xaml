@@ -116,9 +116,12 @@
                             <MenuFlyoutItem Text="Local File" 
                                             Click="MenuFlyoutItem_Click"
                                             Tag="LocalFile"/>
-                            <MenuFlyoutItem Text="Local Camera" 
+                            <MenuFlyoutItem Text="Local Front Camera" 
                                             Click="MenuFlyoutItem_Click"
-                                            Tag="LocalCamera"/>
+                                            Tag="LocalFrontCamera"/>
+                            <MenuFlyoutItem Text="Local Back Camera" 
+                                            Click="MenuFlyoutItem_Click"
+                                            Tag="LocalBackCamera"/>
                             <MenuFlyoutSeparator />
                             <MenuFlyoutItem Text="Online Stream" 
                                             Click="MenuFlyoutItem_Click"

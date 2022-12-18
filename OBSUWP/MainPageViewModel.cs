@@ -15,12 +15,14 @@ using static System.Net.Mime.MediaTypeNames;
 using System.ServiceModel.Channels;
 using Windows.UI.Popups;
 using System.Data;
+using Windows.Media.Capture.Frames;
 
 namespace OBSUWP
 {
     enum SceneType
     {
-        LocalCamera,
+        LocalFrontCamera,
+        LocalBackCamera,
         IPCamera,
         LocalFile,
         OnlineStream
@@ -68,11 +70,17 @@ namespace OBSUWP
             Scene scene = new Scene();
             switch (type)
             {
-                case SceneType.LocalCamera:
+                case SceneType.LocalBackCamera:
                     // Get framesourcegroups and add camera source
-                    var availableFrameSourceGroups = await CameraHelper.GetFrameSourceGroupsAsync();
-                    var inputFrameSourceGroup = availableFrameSourceGroups.ToArray()[1];
-                    scene.AddSource(new LocalCameraSource(inputFrameSourceGroup));
+                    var availableFrameSourceGroups1 = await CameraHelper.GetFrameSourceGroupsAsync();
+                    var inputFrameSourceGroup1 = availableFrameSourceGroups1.ToArray()[1];
+                    scene.AddSource(new LocalCameraSource(inputFrameSourceGroup1));
+                    break;
+                case SceneType.LocalFrontCamera:
+                    // Get framesourcegroups and add camera source
+                    var availableFrameSourceGroups2 = await CameraHelper.GetFrameSourceGroupsAsync();
+                    var inputFrameSourceGroup2 = availableFrameSourceGroups2.ToArray()[0];
+                    scene.AddSource(new LocalCameraSource(inputFrameSourceGroup2));
                     break;
 
                 case SceneType.IPCamera:

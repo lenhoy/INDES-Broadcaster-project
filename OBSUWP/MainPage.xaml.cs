@@ -67,8 +67,11 @@ namespace OBSUWP
                 case "IPCamera":
                     typeEnum = SceneType.IPCamera;
                     break;
-                case "LocalCamera":
-                    typeEnum = SceneType.LocalCamera;
+                case "LocalFrontCamera":
+                    typeEnum = SceneType.LocalFrontCamera;
+                    break;
+                case "LocalBackCamera":
+                    typeEnum = SceneType.LocalBackCamera;
                     break;
                 case "LocalFile":
                     typeEnum = SceneType.LocalFile;
