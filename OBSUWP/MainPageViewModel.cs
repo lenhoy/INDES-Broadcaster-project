@@ -141,7 +141,7 @@ namespace OBSUWP
 
             if (scene == this.liveScene)
             {
-                this.liveScene = emptyScene;
+                this.liveScene = null;
             }
 
 
@@ -188,10 +188,7 @@ namespace OBSUWP
             }
 
             // Remove the source from the previewScene
-            previewScene.Sources.Remove(source);
-
-            
-            OnSourcesChanged();            
+            previewScene.Sources.Remove(source);           
         }
 
         #endregion
