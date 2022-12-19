@@ -20,9 +20,6 @@ namespace OBSUWP
         {
             this.InitializeComponent();
             DataContext = VM = new MainPageViewModel();
-            // Subscribe to redraw scenes when the sources inside the scenes change
-            // Hacky solution as I couldn't make it work 'normally'
-            VM.SourcesChanged += ReDrawScenes;
 
         }
 
@@ -84,12 +81,6 @@ namespace OBSUWP
             {
                 VM.AddSceneCommand.Execute(typeEnum);
             }
-        }
-
-        public void ReDrawScenes()
-        {
-
-            //preView.DrawUI();
         }
 
         private void SceneGridViewFlyoutItem_RemoveClick(object sender, RoutedEventArgs e)
