@@ -48,15 +48,8 @@ namespace OBSUWP
         [ObservableProperty]
         private Scene previewScene;
 
-        // Empty scene for deletion
-        private static Scene emptyScene = new Scene();
-
-        // Delegate for the event
-        public delegate void Notify(); 
-        // Event to trigger a redraw of UI in the view
-        public event Notify SourcesChanged; 
-
-
+        // Scenes for the playlist
+        public ObservableCollection<Scene> Playlist { get; set; } = new ObservableCollection<Scene>();
 
         /// <summary>
         /// Construct the viewmodel
@@ -136,29 +129,6 @@ namespace OBSUWP
             this.Scenes.Add(scene);
         }
 
-        /// <summary>
-        /// Dialog for getting text input from user
-        /// </summary>
-        /// <param name="title"></param>
-        /// <returns></returns>
-        public static async Task<string> ShowTextInputDialogAsync(string title)
-        {
-            var inputTextBox = new TextBox { AcceptsReturn = false };
-            (inputTextBox as FrameworkElement).VerticalAlignment = VerticalAlignment.Bottom;
-            var dialog = new ContentDialog
-            {
-                Content = inputTextBox,
-                Title = title,
-                IsSecondaryButtonEnabled = true,
-                PrimaryButtonText = "Ok",
-                SecondaryButtonText = "Cancel"
-            };
-            if (await dialog.ShowAsync() == ContentDialogResult.Primary)
-                return inputTextBox.Text;
-            else
-                return "";
-        }
-
         // Delete Scene
         [RelayCommand]
         private void RemoveScene(Scene scene)
@@ -226,10 +196,31 @@ namespace OBSUWP
 
         #endregion
 
-        protected virtual void OnSourcesChanged()
+        #region helpers
+        /// <summary>
+        /// Dialog for getting text input from user
+        /// </summary>
+        /// <param name="title"></param>
+        /// <returns></returns>
+        public static async Task<string> ShowTextInputDialogAsync(string title)
         {
-            SourcesChanged?.Invoke();
+            var inputTextBox = new TextBox { AcceptsReturn = false };
+            (inputTextBox as FrameworkElement).VerticalAlignment = VerticalAlignment.Bottom;
+            var dialog = new ContentDialog
+            {
+                Content = inputTextBox,
+                Title = title,
+                IsSecondaryButtonEnabled = true,
+                PrimaryButtonText = "Ok",
+                SecondaryButtonText = "Cancel"
+            };
+            if (await dialog.ShowAsync() == ContentDialogResult.Primary)
+                return inputTextBox.Text;
+            else
+                return "";
         }
+        #endregion
+
 
         public void InitializeScenes()
         {
