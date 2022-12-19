@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using ColorCode.Parsing;
+using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Toolkit.Uwp.UI.Controls;
 using OBSUWP.DataClasses;
@@ -38,7 +39,17 @@ namespace OBSUWP.Controls
 
         partial void OnSourcesChanged(ObservableCollection<ISource> value)
         {
-            DrawUI(); //TODO consider DrawUI(value)?
+            //DrawUI(); //TODO consider DrawUI(value)?
+            // If new inputscene, redraw xaml. Otherwise leave it be empty
+            if (value != null)
+            {
+                GenerateXAML();
+            }
+        }
+
+        partial void OnSourcesChanging(ObservableCollection<ISource> value)
+        {
+            RemoveXAML();
         }
 
         /// <summary>
@@ -55,6 +66,7 @@ namespace OBSUWP.Controls
         /// </summary>
         private void RemoveXAML()
         {
+            defaultText.Visibility = Visibility.Visible;
             myCanvas.Children.Clear();
         }
 
@@ -99,6 +111,10 @@ namespace OBSUWP.Controls
                         {
                             onlineMediaPlayerElement.MediaPlayer.IsMuted = true;
                         }
+                        else
+                        {
+                            onlineMediaPlayerElement.MediaPlayer.IsMuted = false;
+                        }
 
                         // Add the UIelement to the canvas
                         myCanvas.Children.Add(onlineMediaPlayerElement);
@@ -122,9 +138,13 @@ namespace OBSUWP.Controls
                             localMediaPlayerElement.AreTransportControlsEnabled = true;
                             localMediaPlayerElement.TransportControls.IsCompact = true;
                         }
+
                         if (IsMuted)
                         {
                             localMediaPlayerElement.MediaPlayer.IsMuted = true;
+                        } else
+                        {
+                            localMediaPlayerElement.MediaPlayer.IsMuted = false;
                         }
 
                         // Add the UIelement to the canvas

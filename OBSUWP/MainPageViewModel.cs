@@ -48,6 +48,9 @@ namespace OBSUWP
         [ObservableProperty]
         private Scene previewScene;
 
+        // Empty scene for deletion
+        private static Scene emptyScene = new Scene();
+
         // Delegate for the event
         public delegate void Notify(); 
         // Event to trigger a redraw of UI in the view
@@ -98,6 +101,11 @@ namespace OBSUWP
                     var openPicker = new FileOpenPicker();
                     openPicker.FileTypeFilter.Add(".mp4");
                     StorageFile file = await openPicker.PickSingleFileAsync();
+
+                    if (file == null)
+                    {
+                        return;
+                    }
 
                     var _mp = new MediaPlayer();
                     _mp.Source = MediaSource.CreateFromStorageFile(file);
@@ -155,7 +163,34 @@ namespace OBSUWP
         [RelayCommand]
         private void RemoveScene(Scene scene)
         {
+
+            if (scene == this.previewScene)
+            {
+                this.previewScene = null;
+            }
+
+            if (scene == this.liveScene)
+            {
+                this.liveScene = emptyScene;
+            }
+
+
             this.Scenes.Remove(scene);
+            
+            // Dispose of the MediaPlayer so that it doesnt keep playing/existing in background
+            switch (scene.Sources[0])
+            {
+                case LocalVideoSource lvs:
+                    lvs.SourceMediaPlayer.Source = null;
+                    break;
+
+                case LocalCameraSource lcs:
+                    // Don't need to implement any extra disposing here as it's only 2 
+                    // camerahelpers managed by the camerahelper service
+                    break;
+                default:
+                    break;
+            }
         }
 
         // Add Source

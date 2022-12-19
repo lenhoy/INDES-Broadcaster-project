@@ -8,11 +8,12 @@ namespace OBSUWP.DataClasses
 {
     internal partial class LocalVideoSource : ObservableObject, ISource
     {
-
+#nullable enable
         [ObservableProperty]
-        private MediaPlayer sourceMediaPlayer;
+        private MediaPlayer? sourceMediaPlayer = null;
 
-        public object Output => this.SourceMediaPlayer;
+        public object? Output => this.SourceMediaPlayer;
+#nullable disable
 
         public string Type => typeof(LocalVideoSource).ToString();
 
