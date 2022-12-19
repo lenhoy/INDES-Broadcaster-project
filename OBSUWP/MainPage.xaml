@@ -19,6 +19,7 @@
             </locControls:SceneRenderer>
             
         </DataTemplate>
+        
     </Page.Resources>
 
     <Grid BorderBrush="Transparent" BorderThickness="2" Padding="12" >
@@ -32,6 +33,8 @@
             <RowDefinition />
         </Grid.RowDefinitions>
         <!--#endregion-->
+        
+        <!-- #region Scene Grid -->
         <Grid Grid.Column="0" Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
@@ -64,31 +67,17 @@
                     </MenuFlyout>
                 </GridView.Resources>
             </GridView>
-
-            <Button Grid.Column="1"
-                          Grid.Row="1"
-                          Height="60"
-                          Width="60"
-                          HorizontalAlignment="Center"
-                          VerticalAlignment="Center"
-                          CornerRadius="70"
-                          Background="{ThemeResource SystemAccentColor}"
-                          ToolTipService.ToolTip="Add a new Scene"
-                          Command="{x:Bind VM.AddSceneCommand}"
-                          >
-                <StackPanel>
-                    <SymbolIcon Symbol="Add" />
-                </StackPanel>
-            </Button>
-
         </Grid>
+        <!-- #endregion -->
 
-        <!-- Live View -->
+        <!-- #region Live View -->
         <locControls:SceneRenderer x:Name="liveView" Grid.Column="1" Grid.Row="0"
                                    Sources="{x:Bind VM.LiveScene.Sources, Mode=OneWay}">
         </locControls:SceneRenderer>
         
-        <!-- Preview window -->
+        <!-- #endregion -->
+        
+        <!-- #region Preview Window -->
         <Grid Grid.Row="0" Grid.Column="0"
               BorderBrush="Transparent" BorderThickness="2">
             <Grid.RowDefinitions>
@@ -163,12 +152,13 @@
             </CommandBar>
             
         </Grid>
+        <!--#endregion-->
         
+        <!-- #region Playlist -->
         <!-- Text and such for debugging purposes TODO remove-->
-        <TextBlock Grid.Row="1" Grid.Column="1"
-                   Text="{x:Bind VM.PreviewScene.Sources[0].Type, 
-                            Mode=OneWay,
-                            FallbackValue='Select a scene'}"></TextBlock>
+
+
+        <!-- #endregion -->
         
     </Grid>
 </Page>
