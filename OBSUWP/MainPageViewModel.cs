@@ -134,7 +134,7 @@ namespace OBSUWP
 
         // Delete Scene
         [RelayCommand]
-        private async void RemoveScene(Scene scene)
+        private void RemoveScene(Scene scene)
         {
             this.Scenes.Remove(scene);
         }
@@ -177,13 +177,14 @@ namespace OBSUWP
             SourcesChanged?.Invoke();
         }
 
-        public async void InitializeScenes()
+        public void InitializeScenes()
         {
             Collection<ISource> sources = new ObservableCollection<ISource>();
             sources.Add(new OnlineStreamSource("http://amssamples.streaming.mediaservices.windows.net/49b57c87-f5f3-48b3-ba22-c55cfdffa9cb/Sintel.ism/manifest(format=m3u8-aapl)"));
             Scene scene1 = new Scene(sources);
             this.Scenes.Add(scene1);
 
+            /*
             Scene scene2 = new Scene();
             var availableFrameSourceGroups = await CameraHelper.GetFrameSourceGroupsAsync();
             var inputFrameSourceGroup = availableFrameSourceGroups.FirstOrDefault();
@@ -194,15 +195,7 @@ namespace OBSUWP
             inputFrameSourceGroup = availableFrameSourceGroups.ToArray()[1];
             scene3.AddSource(new LocalCameraSource(inputFrameSourceGroup));
             this.Scenes.Add(scene3);
-
-            var scene4 = new Scene();
-            inputFrameSourceGroup = availableFrameSourceGroups.ToArray()[1];
-            scene4.AddSource(new LocalCameraSource(inputFrameSourceGroup));
-            this.Scenes.Add(scene3);
-
-            var scene5 = new Scene();
-            scene5.AddSource(new OnlineStreamSource("http://202.245.13.81/"));
-            this.Scenes.Add(scene5);
+            */
         }
     }
 }
