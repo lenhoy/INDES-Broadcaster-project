@@ -91,9 +91,9 @@ namespace OBSUWP
                 case SceneType.OnlineStream:
                     try
                     {
-                        string inputURI = await ShowAddDialogAsync("Enter stream URI");
+                        string inputURI = await ShowTextInputDialogAsync("Enter stream URI");
                         var _URICheck = new Uri(inputURI);
-                        scene.AddSource(new VideoSource(inputURI));
+                        scene.AddSource(new OnlineStreamSource(inputURI));
                         
                     }
                     catch (Exception)
@@ -114,7 +114,7 @@ namespace OBSUWP
         /// </summary>
         /// <param name="title"></param>
         /// <returns></returns>
-        public static async Task<string> ShowAddDialogAsync(string title)
+        public static async Task<string> ShowTextInputDialogAsync(string title)
         {
             var inputTextBox = new TextBox { AcceptsReturn = false };
             (inputTextBox as FrameworkElement).VerticalAlignment = VerticalAlignment.Bottom;
@@ -180,7 +180,7 @@ namespace OBSUWP
         public async void InitializeScenes()
         {
             Collection<ISource> sources = new ObservableCollection<ISource>();
-            sources.Add(new VideoSource("http://amssamples.streaming.mediaservices.windows.net/49b57c87-f5f3-48b3-ba22-c55cfdffa9cb/Sintel.ism/manifest(format=m3u8-aapl)"));
+            sources.Add(new OnlineStreamSource("http://amssamples.streaming.mediaservices.windows.net/49b57c87-f5f3-48b3-ba22-c55cfdffa9cb/Sintel.ism/manifest(format=m3u8-aapl)"));
             Scene scene1 = new Scene(sources);
             this.Scenes.Add(scene1);
 
@@ -201,7 +201,7 @@ namespace OBSUWP
             this.Scenes.Add(scene3);
 
             var scene5 = new Scene();
-            scene5.AddSource(new VideoSource("http://202.245.13.81/"));
+            scene5.AddSource(new OnlineStreamSource("http://202.245.13.81/"));
             this.Scenes.Add(scene5);
         }
     }

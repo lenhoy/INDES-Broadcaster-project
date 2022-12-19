@@ -77,7 +77,7 @@ namespace OBSUWP.Controls
                 switch (source)
                 {
                     #region VideoSource
-                    case VideoSource videoSource:
+                    case OnlineStreamSource videoSource:
                         // Create playback element and set the source
                         MediaPlayerElement mediaPlayerElement = new MediaPlayerElement();
                         MediaSource _ms = MediaSource.CreateFromUri(new Uri((string)videoSource.Output));

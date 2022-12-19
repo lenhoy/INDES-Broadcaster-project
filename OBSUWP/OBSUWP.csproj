@@ -127,7 +127,7 @@
     <Compile Include="DataClasses\LocalCameraSource.cs" />
     <Compile Include="DataClasses\LocalVideoSource.cs" />
     <Compile Include="DataClasses\Scene.cs" />
-    <Compile Include="DataClasses\VideoSource.cs" />
+    <Compile Include="DataClasses\OnlineStreamSource.cs" />
     <Compile Include="Inferfaces\ICamerahelperService.cs" />
     <Compile Include="Inferfaces\ISource.cs" />
     <Compile Include="MainPage.xaml.cs">

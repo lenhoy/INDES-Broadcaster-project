@@ -5,14 +5,14 @@ using System.ComponentModel.DataAnnotations;
 
 namespace OBSUWP.DataClasses
 {
-    internal partial class VideoSource : ObservableValidator, ISource
+    internal partial class OnlineStreamSource : ObservableValidator, ISource
     {
         [ObservableProperty]
         [Required]
         [Url]
         private string path;
 
-        public VideoSource(string path)
+        public OnlineStreamSource(string path)
         {
             this.path = path;
         }
