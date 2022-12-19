@@ -9,6 +9,7 @@ using System.Diagnostics;
 using Windows.Foundation;
 using Windows.Media.Capture.Frames;
 using Windows.Media.Core;
+using Windows.Media.Playback;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
@@ -76,31 +77,58 @@ namespace OBSUWP.Controls
                 // determine the type of ISource implementation
                 switch (source)
                 {
-                    #region VideoSource
+                    #region OnlineStreamSource
                     case OnlineStreamSource videoSource:
                         // Create playback element and set the source
-                        MediaPlayerElement mediaPlayerElement = new MediaPlayerElement();
-                        MediaSource _ms = MediaSource.CreateFromUri(new Uri((string)videoSource.Output));
-                        mediaPlayerElement.Source = _ms;
+                        MediaPlayerElement onlineMediaPlayerElement = new MediaPlayerElement();
+                        MediaSource _oms = MediaSource.CreateFromUri(new Uri((string)videoSource.Output));
+                        onlineMediaPlayerElement.Source = _oms;
 
 
                         // Settings for the playerelement layout and behaviour
-                        ApplyScaling(mediaPlayerElement);
-                        mediaPlayerElement.Stretch = Stretch.Uniform;
+                        ApplyScaling(onlineMediaPlayerElement);
+                        onlineMediaPlayerElement.Stretch = Stretch.Uniform;
 
-                        mediaPlayerElement.AutoPlay = true;
+                        onlineMediaPlayerElement.AutoPlay = true;
                         if (AreTransportControlsVisible)
                         {
-                            mediaPlayerElement.AreTransportControlsEnabled = true;
-                            mediaPlayerElement.TransportControls.IsCompact = true;
+                            onlineMediaPlayerElement.AreTransportControlsEnabled = true;
+                            onlineMediaPlayerElement.TransportControls.IsCompact = true;
                         }
                         if (IsMuted)
                         {
-                            mediaPlayerElement.MediaPlayer.IsMuted = true;
+                            onlineMediaPlayerElement.MediaPlayer.IsMuted = true;
                         }
 
                         // Add the UIelement to the canvas
-                        myCanvas.Children.Add(mediaPlayerElement);
+                        myCanvas.Children.Add(onlineMediaPlayerElement);
+
+                        break;
+                    #endregion
+                    #region LocalVideoSource
+                    case LocalVideoSource localVideoSource:
+                        // Create playback element and set the source
+                        MediaPlayerElement localMediaPlayerElement = new MediaPlayerElement();
+                        MediaPlayer _lmp = localVideoSource.SourceMediaPlayer;
+                        localMediaPlayerElement.SetMediaPlayer(_lmp);
+
+                        // Settings for the playerelement layout and behaviour
+                        ApplyScaling(localMediaPlayerElement);
+                        localMediaPlayerElement.Stretch = Stretch.Uniform;
+
+                        localMediaPlayerElement.AutoPlay = true;
+                        if (AreTransportControlsVisible)
+                        {
+                            localMediaPlayerElement.AreTransportControlsEnabled = true;
+                            localMediaPlayerElement.TransportControls.IsCompact = true;
+                        }
+                        if (IsMuted)
+                        {
+                            localMediaPlayerElement.MediaPlayer.IsMuted = true;
+                        }
+
+                        // Add the UIelement to the canvas
+                        myCanvas.Children.Add(localMediaPlayerElement);
 
                         break;
                     #endregion

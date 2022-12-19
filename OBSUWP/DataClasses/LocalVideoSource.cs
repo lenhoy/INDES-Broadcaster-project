@@ -1,18 +1,33 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using OBSUWP.Inferfaces;
 using System;
+using System.Runtime.CompilerServices;
+using Windows.Media.Playback;
 
 namespace OBSUWP.DataClasses
 {
-    internal class LocalVideoSource : ObservableObject, ISource
+    internal partial class LocalVideoSource : ObservableObject, ISource
     {
-        public object Output => throw new NotImplementedException();
 
-        public string Type => throw new NotImplementedException();
+        [ObservableProperty]
+        private MediaPlayer sourceMediaPlayer;
 
+        public object Output => this.SourceMediaPlayer;
+
+        public string Type => typeof(LocalVideoSource).ToString();
+
+        public LocalVideoSource(MediaPlayer mp)
+        {
+            this.sourceMediaPlayer = mp;
+        }
+
+        /// <summary>
+        /// Returns the path to the local video file
+        /// </summary>
+        /// <returns></returns>
         public string GetOutput()
         {
-            throw new NotImplementedException();
+            return this.SourceMediaPlayer.Source.ToString();
         }
     }
 }

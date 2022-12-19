@@ -16,6 +16,10 @@ using System.ServiceModel.Channels;
 using Windows.UI.Popups;
 using System.Data;
 using Windows.Media.Capture.Frames;
+using Windows.Media.Playback;
+using Windows.Media.Core;
+using Windows.Storage.Pickers;
+using Windows.Storage;
 
 namespace OBSUWP
 {
@@ -76,6 +80,7 @@ namespace OBSUWP
                     var inputFrameSourceGroup1 = availableFrameSourceGroups1.ToArray()[1];
                     scene.AddSource(new LocalCameraSource(inputFrameSourceGroup1));
                     break;
+
                 case SceneType.LocalFrontCamera:
                     // Get framesourcegroups and add camera source
                     var availableFrameSourceGroups2 = await CameraHelper.GetFrameSourceGroupsAsync();
@@ -86,8 +91,22 @@ namespace OBSUWP
                 case SceneType.IPCamera:
                     Debug.Write("IPCamera not implemented");
                     break;
+
                 case SceneType.LocalFile:
+                    // Create MediaPlayer for the LocalVideoSource
+                    // Get a storage file
+                    var openPicker = new FileOpenPicker();
+                    openPicker.FileTypeFilter.Add(".mp4");
+                    StorageFile file = await openPicker.PickSingleFileAsync();
+
+                    var _mp = new MediaPlayer();
+                    _mp.Source = MediaSource.CreateFromStorageFile(file);
+
+                    // add new LocalVideoSource with the created MediaPlayer to the new scene
+                    scene.AddSource(new LocalVideoSource(_mp));
+
                     break;
+
                 case SceneType.OnlineStream:
                     try
                     {
