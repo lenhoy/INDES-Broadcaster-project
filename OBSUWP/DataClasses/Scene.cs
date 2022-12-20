@@ -2,6 +2,8 @@
 using OBSUWP.Inferfaces;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using Windows.Storage.Pickers.Provider;
 
 namespace OBSUWP.DataClasses
 {
@@ -13,16 +15,24 @@ namespace OBSUWP.DataClasses
         [ObservableProperty]
         private ObservableCollection<ISource> sources;
 
+        public string Name { get; set; }
+
+
+        #region contructors
 
         public Scene()
         {
             sources = new ObservableCollection<ISource>();
+            SetName();
         }
         
         public Scene(Collection<ISource> sources)
         {
             Sources = (ObservableCollection<ISource>)sources;
+            SetName();
         }
+
+        #endregion
 
 
         #region Sources
@@ -42,5 +52,10 @@ namespace OBSUWP.DataClasses
             return ref sources;
         }
         #endregion Sources
+
+        private void SetName()
+        {
+            this.Name = "New Scene";
+        }
     }
 }

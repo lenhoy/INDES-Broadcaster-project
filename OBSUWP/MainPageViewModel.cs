@@ -20,6 +20,7 @@ using Windows.Media.Playback;
 using Windows.Media.Core;
 using Windows.Storage.Pickers;
 using Windows.Storage;
+using System.Collections.Generic;
 
 namespace OBSUWP
 {
@@ -48,8 +49,18 @@ namespace OBSUWP
         [ObservableProperty]
         private Scene previewScene;
 
-        // Scenes for the playlist
-        public ObservableCollection<Scene> Playlist { get; set; } = new ObservableCollection<Scene>();
+        // PlayList Dictionary
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(PlaylistScenes))]
+        private Dictionary<Scene, int?> playlist = new();
+
+        // Playlist list of scenes for ListView
+        // Just for displaying in xaml
+        public ObservableCollection<Scene> PlaylistScenes { get; } = new();
+
+        // Is the playlist playing
+        [ObservableProperty]
+        private bool playlistActive;
 
         /// <summary>
         /// Construct the viewmodel
@@ -65,12 +76,16 @@ namespace OBSUWP
 
         // Add Scene
         [RelayCommand] // TODO return task instead of void
-        private async void AddScene(SceneType type)
+        private async Task AddScene(SceneType type)
         {
             Scene scene = new Scene();
             switch (type)
             {
                 case SceneType.LocalBackCamera:
+
+                    // Set scene name
+                    scene.Name = "New Back Camera Scene";
+
                     // Get framesourcegroups and add camera source
                     var availableFrameSourceGroups1 = await CameraHelper.GetFrameSourceGroupsAsync();
                     var inputFrameSourceGroup1 = availableFrameSourceGroups1.ToArray()[1];
@@ -78,6 +93,10 @@ namespace OBSUWP
                     break;
 
                 case SceneType.LocalFrontCamera:
+
+                    // Set scene name
+                    scene.Name = "New Front Camera Scene";
+
                     // Get framesourcegroups and add camera source
                     var availableFrameSourceGroups2 = await CameraHelper.GetFrameSourceGroupsAsync();
                     var inputFrameSourceGroup2 = availableFrameSourceGroups2.ToArray()[0];
@@ -85,10 +104,18 @@ namespace OBSUWP
                     break;
 
                 case SceneType.IPCamera:
+                    
+                    // Set scene name
+                    scene.Name = "New IP Camera Scene";
+
                     Debug.Write("IPCamera not implemented");
                     break;
 
                 case SceneType.LocalFile:
+
+                    // Set scene name
+                    scene.Name = "New Local File Scene";
+
                     // Create MediaPlayer for the LocalVideoSource
                     // Get a storage file
                     var openPicker = new FileOpenPicker();
@@ -111,6 +138,9 @@ namespace OBSUWP
                 case SceneType.OnlineStream:
                     try
                     {
+                        // Set scene name
+                        scene.Name = "New Online Stream Scene";
+
                         string inputURI = await ShowTextInputDialogAsync("Enter stream URI");
                         var _URICheck = new Uri(inputURI);
                         scene.AddSource(new OnlineStreamSource(inputURI));
@@ -163,6 +193,38 @@ namespace OBSUWP
             }
         }
 
+        // TODO: Add Scene to Playlist
+        [RelayCommand]
+        private async Task AddToPlaylist(Tuple<Scene,int?> input)
+        {
+            var scene = input.Item1;
+            var time = input.Item2;
+
+            try
+            {
+                Playlist.Add(scene, time);
+                PlaylistScenes.Add(scene);
+            }
+            catch (ArgumentException)
+            {
+                Debug.WriteLine("Scene already is in Playlist");
+                var dialog = new MessageDialog("Can't add Scene because it already is in Playlist");
+                await dialog.ShowAsync();
+                return; // exit
+            }
+
+        }
+        // TODO: Remove Scene from playlist
+        [RelayCommand]
+        private void RemoveFromPlaylist(Scene scene)
+        {
+
+        }
+
+        // TODO: Start Playlist
+
+        // TODO: Stop Playlist
+
         // Add Source
         [RelayCommand]
         private void AddSourceToPreviewScene(ISource source)
@@ -192,6 +254,8 @@ namespace OBSUWP
         }
 
         #endregion
+
+
 
         #region helpers
         /// <summary>
@@ -224,6 +288,7 @@ namespace OBSUWP
             Collection<ISource> sources = new ObservableCollection<ISource>();
             sources.Add(new OnlineStreamSource("http://amssamples.streaming.mediaservices.windows.net/49b57c87-f5f3-48b3-ba22-c55cfdffa9cb/Sintel.ism/manifest(format=m3u8-aapl)"));
             Scene scene1 = new Scene(sources);
+            scene1.Name = "Online Stream Sceneiuhsefuhseifhiuesfiuesfiuhseifhesifhiehfiuesifhisefiuesfiuesifhseifhsiefhisefiuesf";
             this.Scenes.Add(scene1);
 
             /*

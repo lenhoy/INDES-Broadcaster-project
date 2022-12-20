@@ -1,4 +1,5 @@
 ﻿using OBSUWP.DataClasses;
+using System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -83,9 +84,17 @@ namespace OBSUWP
             }
         }
 
-        private void SceneGridViewFlyoutItem_RemoveClick(object sender, RoutedEventArgs e)
+        private void SceneGridViewFlyoutItem_Remove_Click(object sender, RoutedEventArgs e)
         {
             VM.RemoveSceneCommand.Execute(rightClickedScene);
+        }
+
+        private void SceneGridViewFlyoutItem_AddToPlayList_Click(object sender, RoutedEventArgs e)
+        {
+            // Using a touple to pass 2 arguments to command, as RelayCommands only can take 1 argument
+            var inputTuple = new Tuple<Scene, int?>(rightClickedScene, null);
+
+            VM.AddToPlaylistCommand.Execute(inputTuple);
         }
     }
 }
