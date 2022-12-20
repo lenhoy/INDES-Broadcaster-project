@@ -21,6 +21,8 @@ using Windows.Media.Core;
 using Windows.Storage.Pickers;
 using Windows.Storage;
 using System.Collections.Generic;
+using Windows.UI.Xaml.Data;
+using System.Threading;
 
 namespace OBSUWP
 {
@@ -39,7 +41,8 @@ namespace OBSUWP
         public static MainPageViewModel Current { get; private set; }
 
         // observable list of scenes
-        public ObservableCollection<Scene> Scenes { get; set; } = new ObservableCollection<Scene>();
+        [ObservableProperty]
+        private ObservableCollection<Scene> scenes = new();
 
         // The selected Live Scene
         [ObservableProperty]
@@ -193,7 +196,7 @@ namespace OBSUWP
             }
         }
 
-        // TODO: Add Scene to Playlist
+        // Add Scene to Playlist
         [RelayCommand]
         private async Task AddToPlaylist(Tuple<Scene,int?> input)
         {
@@ -253,6 +256,37 @@ namespace OBSUWP
             previewScene.Sources.Remove(source);           
         }
 
+        // Change Scene name?
+        [RelayCommand]
+        private async Task ChangeSceneName(Scene targetScene)
+        {
+            try
+            {
+                var newName = await ShowTextInputDialogAsync("New Name");
+
+                foreach (Scene scene in Scenes)
+                {
+                    if (targetScene == scene)
+                    {
+                        // Updating doesnt trigger UI update, no workaround is 
+                        // Deleting and adding as new Scene
+                        targetScene.Name = newName;
+                        Scenes.Add(targetScene);
+                        
+                        Scenes.Remove(scene);
+                        
+                    }
+                }
+
+
+            }
+            catch (Exception)
+            {
+                return; // exit
+            }
+
+        }
+
         #endregion
 
 
@@ -261,7 +295,7 @@ namespace OBSUWP
         /// <summary>
         /// Dialog for getting text input from user
         /// </summary>
-        /// <param name="title"></param>
+        /// <param name="title">Title of the Dialog window</param>
         /// <returns></returns>
         public static async Task<string> ShowTextInputDialogAsync(string title)
         {

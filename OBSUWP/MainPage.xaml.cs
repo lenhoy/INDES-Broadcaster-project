@@ -1,4 +1,5 @@
-﻿using OBSUWP.DataClasses;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using OBSUWP.DataClasses;
 using System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -30,7 +31,7 @@ namespace OBSUWP
         }
 
         /// <summary>
-        /// Scene gridview item rightclick
+        /// Scene gridview item rightclick. Set rightClicked scene and show the flyout
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -95,6 +96,11 @@ namespace OBSUWP
             var inputTuple = new Tuple<Scene, int?>(rightClickedScene, null);
 
             VM.AddToPlaylistCommand.Execute(inputTuple);
+        }
+
+        private void SceneGridViewFlyoutItem_ChangeName_Click(object sender, RoutedEventArgs e)
+        {
+            VM.ChangeSceneNameCommand.Execute(rightClickedScene);
         }
     }
 }

@@ -15,9 +15,18 @@
     <!-- DataTemplates for collection views such as gridview or listview -->
     <Page.Resources>
         <DataTemplate x:Name="sceneGridTemplate" x:DataType="localDataClasses:Scene">
-            <locControls:SceneRenderer Sources="{x:Bind Sources, Mode=OneWay}"
-                                       Width="192" Height="108">
-            </locControls:SceneRenderer>
+            <Grid>
+                <locControls:SceneRenderer Sources="{x:Bind Sources, Mode=OneWay}"
+                                           Width="192" Height="108">
+                </locControls:SceneRenderer>
+                <Border Background="Black"
+                        Opacity="0.5"
+                        Padding="5"
+                        Width="192">
+                    <TextBlock VerticalAlignment="Bottom" 
+                               Text="{x:Bind Name}" />
+                </Border>
+            </Grid>
         </DataTemplate>
         
         <!-- Temp Listview of scene names -->
@@ -60,7 +69,7 @@
                       Grid.ColumnSpan="2" Grid.RowSpan="2"
                       x:Name="SceneGridView"
                       Background="{ThemeResource SystemControlTransparentRevealBackgroundBrush}"
-                      ItemsSource="{x:Bind VM.Scenes}"
+                      ItemsSource="{x:Bind VM.Scenes, Mode=OneWay}"
                       ItemTemplate="{StaticResource sceneGridTemplate}"
                       IsItemClickEnabled="True"
                       IsRightTapEnabled="True"
@@ -75,6 +84,7 @@
                         <MenuFlyout.Items>
                             <MenuFlyoutItem Text="Delete Scene" Click="SceneGridViewFlyoutItem_Remove_Click" />
                             <MenuFlyoutItem Text="Add to Playlist" Click="SceneGridViewFlyoutItem_AddToPlayList_Click" />
+                            <MenuFlyoutItem Text="Change Name" Click="SceneGridViewFlyoutItem_ChangeName_Click" />
                         </MenuFlyout.Items>
                     </MenuFlyout>
                 </GridView.Resources>

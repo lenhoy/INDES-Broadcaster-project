@@ -15,7 +15,8 @@ namespace OBSUWP.DataClasses
         [ObservableProperty]
         private ObservableCollection<ISource> sources;
 
-        public string Name { get; set; }
+        [ObservableProperty]
+        private string name;
 
 
         #region contructors
