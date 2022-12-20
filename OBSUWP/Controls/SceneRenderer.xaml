@@ -11,7 +11,7 @@
 
     <Grid>
         <!-- Border used to make a clippingmask, hiding any content outside the canvas -->
-        <Border x:Name="clippingBorder" BorderThickness="4" BorderBrush="Yellow">
+        <Border x:Name="clippingBorder">
             <StackPanel>
 
                 <TextBlock x:Name="defaultText" Text="Please Select a Scene"

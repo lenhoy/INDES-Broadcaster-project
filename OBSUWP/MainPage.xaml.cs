@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using OBSUWP.DataClasses;
 using System;
+using System.Numerics;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -102,5 +103,39 @@ namespace OBSUWP
         {
             VM.ChangeSceneNameCommand.Execute(rightClickedScene);
         }
+
+        #region Playlist UI
+
+        private void PlaylistListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            // Toggle visibility of the PlayList info panel
+            PlaylistInfopanel.Visibility = PlaylistInfopanel.Visibility.Equals(Visibility.Visible) ? Visibility.Collapsed : Visibility.Visible;
+
+        }
+
+        private async void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            try
+            {
+                
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        private void CheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            InputTimeTextbox.IsEnabled = false;
+        }
+
+        private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            InputTimeTextbox.IsEnabled = true;
+        }
+
+        #endregion
     }
 }

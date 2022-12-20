@@ -53,6 +53,10 @@ namespace OBSUWP
         private Scene previewScene;
 
         // PlayList Dictionary
+        /// <summary>
+        /// Keeps track of how long in int seconds the scene should be active.
+        /// int? = null indicates that the scene's done event should be used.
+        /// </summary>
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(PlaylistScenes))]
         private Dictionary<Scene, int?> playlist = new();
@@ -177,8 +181,12 @@ namespace OBSUWP
                 this.liveScene = null;
             }
 
-
+            // Remove from Scene list
             this.Scenes.Remove(scene);
+
+            // Remove from Playlist
+            Playlist.Remove(scene);
+            PlaylistScenes.Remove(scene);
             
             // Dispose of the MediaPlayer so that it doesnt keep playing/existing in background
             switch (scene.Sources[0])
@@ -217,11 +225,35 @@ namespace OBSUWP
             }
 
         }
-        // TODO: Remove Scene from playlist
+        // Remove Scene from playlist
         [RelayCommand]
         private void RemoveFromPlaylist(Scene scene)
         {
+            Playlist.Remove(scene);
+            PlaylistScenes.Remove(scene);
+        }
 
+        /// <summary>
+        /// Set how long a playlist scene should play for in seconds.
+        /// Set int? = null to use scene's done event instead.
+        /// </summary>
+        /// <param name="input"></param>
+        [RelayCommand]
+        private async Task SetTime(Tuple<Scene,int?> input)
+        {
+            var scene = input.Item1;
+            var time = input.Item2;
+
+            try
+            {
+                Playlist[scene] = time;
+            }
+            catch (Exception)
+            {
+                var dialog = new MessageDialog("Can't find the scene in the dict.");
+                await dialog.ShowAsync();
+                return;
+            }
         }
 
         // TODO: Start Playlist
@@ -264,6 +296,11 @@ namespace OBSUWP
             {
                 var newName = await ShowTextInputDialogAsync("New Name");
 
+                // Update Playlist
+                Playlist.Remove(targetScene);
+                PlaylistScenes.Remove(targetScene);
+
+                // Update Scene list
                 foreach (Scene scene in Scenes)
                 {
                     if (targetScene == scene)
