@@ -28,12 +28,12 @@
                 </Border>
             </Grid>
         </DataTemplate>
-        
+
         <!-- Temp Listview of scene names -->
         <DataTemplate x:Name="playListViewTemplate" x:DataType="localDataClasses:Scene">
             <TextBlock Text="{x:Bind Name}"></TextBlock>
         </DataTemplate>
-        
+
         <!-- Playlist Listview -->
         <DataTemplate x:Name="playListviewTemplate" x:DataType="localDataClasses:Scene">
             <StackPanel Orientation="Horizontal">
@@ -53,21 +53,13 @@
             <RowDefinition />
         </Grid.RowDefinitions>
         <!--#endregion-->
-        
-        <!-- #region Scene Grid -->
-        <Grid Grid.Column="0" Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="80" />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
-                <RowDefinition Height="80" />
-            </Grid.RowDefinitions>
 
-            <GridView Grid.Column="0" Grid.Row="0"
-                      Grid.ColumnSpan="2" Grid.RowSpan="2"
-                      x:Name="SceneGridView"
+        <!-- #region Scene Grid -->
+        <Grid Grid.Column="0" 
+              Grid.Row="1"
+              Padding="10">
+
+            <GridView x:Name="SceneGridView"
                       Background="{ThemeResource SystemControlTransparentRevealBackgroundBrush}"
                       ItemsSource="{x:Bind VM.Scenes, Mode=OneWay}"
                       ItemTemplate="{StaticResource sceneGridTemplate}"
@@ -79,6 +71,7 @@
                       CanReorderItems="True"
                       CanDragItems="True"
                       AllowDrop="True">
+
                 <GridView.Resources>
                     <MenuFlyout x:Name="gridRightClickflyout">
                         <MenuFlyout.Items>
@@ -90,19 +83,22 @@
                 </GridView.Resources>
             </GridView>
         </Grid>
-        
+
         <!-- #endregion -->
 
         <!-- #region Live View -->
         <locControls:SceneRenderer x:Name="liveView" Grid.Column="1" Grid.Row="0"
                                    Sources="{x:Bind VM.LiveScene.Sources, Mode=OneWay}">
         </locControls:SceneRenderer>
-        
+
         <!-- #endregion -->
-        
+
         <!-- #region Preview window -->
-        <Grid Grid.Row="0" Grid.Column="0"
-              BorderBrush="Transparent" BorderThickness="2">
+        <Grid Grid.Row="0" 
+              Grid.Column="0"
+              BorderBrush="Gray" 
+              BorderThickness="1">
+
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="60" />
@@ -149,7 +145,7 @@
                               MinWidth="80"
                               Content="{  x:Bind VM.PreviewScene.Sources[0].Type,
                                             Mode=OneWay, 
-                                            FallbackValue='Select a scene'}"> 
+                                            FallbackValue='Select a scene'}">
                     <AppBarButton.Flyout>
                         <Flyout>
                             <StackPanel>
@@ -173,18 +169,17 @@
                               HorizontalAlignment="Right"
                               Background="{ThemeResource SystemAccentColor}"/>
             </CommandBar>
-            
+
         </Grid>
-        
+
         <!-- #endregion -->
-        
+
         <!-- #region Playlist view -->
-        
-        <!-- The Selected scenes for the playlist -->
+
         <StackPanel Orientation="Horizontal"
                     Grid.Column="1" 
                     Grid.Row="1">
-            
+
             <!-- List of scenes in playlist -->
             <ListView
                 x:Name="PlaylistListView"
@@ -192,6 +187,7 @@
                 Height="400" 
                 MinWidth="200"
                 MaxWidth="300"
+                Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
                 SelectionMode="Single"
                 CanDragItems="True" 
                 CanReorderItems="True" 
@@ -208,27 +204,33 @@
                         Width="300"
                         Height="200"
                         Margin="10 0 0 0"
-                        Visibility="Collapsed">
+                        Visibility="Collapsed" 
+                        Opacity="0"
+                        RenderTransformOrigin="0.5,0.5">
                 
+                <StackPanel.RenderTransform>
+                    <CompositeTransform x:Name="PanelCompositeTransform"/>
+                </StackPanel.RenderTransform>
+
                 <TextBlock Text="How long should scene play?"
                            HorizontalAlignment="Left"/>
-                
+
                 <TextBox x:Name="InputTimeTextbox" 
                          Width="100"
                          Height="30"
                          Margin="0 5 0 0"
                          HorizontalAlignment="Left"
                          TextChanged="TextBox_TextChanged" />
-                
+
                 <CheckBox Content="Should play until Scene finished"
                           HorizontalAlignment="Left"
                           Margin="0 5"
                           Checked="CheckBox_Checked"
                           Unchecked="CheckBox_Unchecked" />
             </StackPanel>
-                  
+
         </StackPanel>
         <!-- #endregion -->
-        
+
     </Grid>
 </Page>

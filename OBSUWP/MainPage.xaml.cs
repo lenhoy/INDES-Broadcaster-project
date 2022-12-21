@@ -2,8 +2,10 @@
 using OBSUWP.DataClasses;
 using System;
 using System.Numerics;
+using Windows.UI.Composition;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media.Animation;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -19,10 +21,14 @@ namespace OBSUWP
         // save rightclicked scene as context for scene deleted flyout click handler
         private Scene rightClickedScene { get; set; }
 
+        // Animation of the infopanel
+        private Storyboard infopanelStoryboard = new Storyboard();
+
         public MainPage()
         {
             this.InitializeComponent();
             DataContext = VM = new MainPageViewModel();
+            InitAnimateInfopanel();
 
         }
 
@@ -109,7 +115,15 @@ namespace OBSUWP
         private void PlaylistListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             // Toggle visibility of the PlayList info panel
-            PlaylistInfopanel.Visibility = PlaylistInfopanel.Visibility.Equals(Visibility.Visible) ? Visibility.Collapsed : Visibility.Visible;
+            if (PlaylistInfopanel.Visibility.Equals(Visibility.Collapsed))
+            {
+                // Show and animate
+                PlaylistInfopanel.Visibility = Visibility.Visible;
+                infopanelStoryboard.Begin();
+            } else
+            {
+                PlaylistInfopanel.Visibility = Visibility.Collapsed;
+            }
 
         }
 
@@ -136,6 +150,38 @@ namespace OBSUWP
             InputTimeTextbox.IsEnabled = true;
         }
 
+        #endregion
+
+        #region animation
+        private void InitAnimateInfopanel()
+        {
+            // Slide animation
+            DoubleAnimation slideAnimation = new DoubleAnimation();
+            slideAnimation.From = -20;
+            slideAnimation.To = 0;
+            slideAnimation.Duration = new Duration(TimeSpan.FromSeconds(0.3));
+            var ease = new ExponentialEase();
+            ease.Exponent = -2;
+            ease.EasingMode = EasingMode.EaseIn;
+            slideAnimation.EasingFunction = ease;
+
+
+            infopanelStoryboard.Children.Add(slideAnimation);
+
+            Storyboard.SetTarget(slideAnimation, PanelCompositeTransform);
+            Storyboard.SetTargetProperty(slideAnimation, "TranslateX");
+
+            // Opacity animation
+            DoubleAnimation opacityAnimation = new DoubleAnimation();
+            opacityAnimation.From = 0;
+            opacityAnimation.To = 1;
+            opacityAnimation.Duration = new Duration(TimeSpan.FromSeconds(0.5));
+
+            infopanelStoryboard.Children.Add(opacityAnimation);
+
+            Storyboard.SetTarget(opacityAnimation, PlaylistInfopanel);
+            Storyboard.SetTargetProperty(opacityAnimation, "Opacity");
+        }
         #endregion
     }
 }
