@@ -1,23 +1,18 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using OBSUWP.Inferfaces;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Windows.Storage.Streams;
 
 namespace OBSUWP.DataClasses
 {
-    internal partial class VideoSource : ObservableValidator, ISource
+    internal partial class OnlineStreamSource : ObservableValidator, ISource
     {
         [ObservableProperty]
         [Required]
         [Url]
         private string path;
 
-        public VideoSource(string path)
+        public OnlineStreamSource(string path)
         {
             this.path = path;
         }

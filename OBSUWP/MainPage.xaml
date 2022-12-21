@@ -12,15 +12,37 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
+    <!-- DataTemplates for collection views such as gridview or listview -->
     <Page.Resources>
         <DataTemplate x:Name="sceneGridTemplate" x:DataType="localDataClasses:Scene">
-            <locControls:SceneRenderer InputScene="{x:Bind Self, Mode=OneWay}"
-                                       Width="240" Height="135">
-            </locControls:SceneRenderer>
+            <Grid>
+                <locControls:SceneRenderer Sources="{x:Bind Sources, Mode=OneWay}"
+                                           Width="192" Height="108">
+                </locControls:SceneRenderer>
+                <Border Background="Black"
+                        Opacity="0.5"
+                        Padding="5"
+                        Width="192">
+                    <TextBlock VerticalAlignment="Bottom" 
+                               Text="{x:Bind Name}" />
+                </Border>
+            </Grid>
+        </DataTemplate>
+
+        <!-- Temp Listview of scene names -->
+        <DataTemplate x:Name="playListViewTemplate" x:DataType="localDataClasses:Scene">
+            <TextBlock Text="{x:Bind Name}"></TextBlock>
+        </DataTemplate>
+
+        <!-- Playlist Listview -->
+        <DataTemplate x:Name="playListviewTemplate" x:DataType="localDataClasses:Scene">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{x:Bind Name}"></TextBlock>
+            </StackPanel>
         </DataTemplate>
     </Page.Resources>
 
-    <Grid BorderBrush="Transparent" BorderThickness="2" Padding="12" >
+    <Grid BorderBrush="Transparent" BorderThickness="1" Padding="12" >
         <!--#region Grid Definitions -->
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
@@ -32,89 +54,213 @@
         </Grid.RowDefinitions>
         <!--#endregion-->
 
-        <GridView Grid.Column="0" Grid.Row="1"
-                  Margin="10 20 0 0"
-                  ItemsSource="{x:Bind VM.Scenes}"
-                  ItemTemplate="{StaticResource sceneGridTemplate}"
-                  SelectionMode="None"
-                  IsItemClickEnabled="True"
-                  ItemClick="GridView_ItemClick">
-        </GridView>
+        <!-- #region Scene Grid -->
+        <Grid Grid.Column="0" 
+              Grid.Row="1"
+              Padding="15 15 0 15">
 
-        <!-- Live View -->
-        <locControls:SceneRenderer x:Name="liveView" Grid.Column="1" Grid.Row="0"
-                                   InputScene="{x:Bind VM.LiveScene, Mode=OneWay}">
+            <GridView x:Name="SceneGridView"
+                      Background="{ThemeResource HandwritingviewBackgroundBrush}"
+                      BorderBrush="{ThemeResource SystemControlBackgroundBaseLowRevealBorderBrush}"
+                      BorderThickness="1"
+                      CornerRadius="15"
+                      Padding="15"
+                      ItemsSource="{x:Bind VM.Scenes, Mode=OneWay}"
+                      ItemTemplate="{StaticResource sceneGridTemplate}"
+                      IsItemClickEnabled="True"
+                      IsRightTapEnabled="True"
+                      ItemClick="GridView_ItemClick"
+                      RightTapped="GridView_RightTapped"
+                      SelectionMode="Single"
+                      CanReorderItems="True"
+                      CanDragItems="True"
+                      AllowDrop="True">
+
+                <GridView.Resources>
+                    <MenuFlyout x:Name="gridRightClickflyout">
+                        <MenuFlyout.Items>
+                            <MenuFlyoutItem Text="Delete Scene" Click="SceneGridViewFlyoutItem_Remove_Click" />
+                            <MenuFlyoutItem Text="Add to Playlist" Click="SceneGridViewFlyoutItem_AddToPlayList_Click" />
+                            <MenuFlyoutItem Text="Change Name" Click="SceneGridViewFlyoutItem_ChangeName_Click" />
+                        </MenuFlyout.Items>
+                    </MenuFlyout>
+                </GridView.Resources>
+            </GridView>
+        </Grid>
+
+        <!-- #endregion -->
+
+        <!-- #region Live View -->
+        <locControls:SceneRenderer x:Name="liveView" 
+                                   Grid.Column="1" 
+                                   Grid.Row="0"
+                                   Sources="{x:Bind VM.LiveScene.Sources, Mode=OneWay}">
         </locControls:SceneRenderer>
-        
-        <!-- Preview window -->
-        <Grid Grid.Row="0" Grid.Column="0"
-              BorderBrush="Transparent" BorderThickness="2">
+
+        <!-- #endregion -->
+
+        <!-- #region Preview window -->
+        <Grid Grid.Row="0" 
+              Grid.Column="0"
+              CornerRadius="15"
+              BorderBrush="{ThemeResource SystemControlBackgroundTransparentRevealBorderBrush}" 
+              BorderThickness="1.5">
+
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="60" />
             </Grid.RowDefinitions>
 
             <locControls:SceneRenderer x:Name="preView" Grid.Row="0"
-                                       InputScene="{x:Bind VM.PreviewScene, Mode=OneWay}"
+                                       Sources="{x:Bind VM.PreviewScene.Sources, Mode=OneWay}"
                                        AreTransportControlsVisible="true"
                                        IsMuted="false">
             </locControls:SceneRenderer>
 
-            <StackPanel Grid.Row="1" Orientation="Horizontal"
-                        Margin="5"
-                        CornerRadius="10" RequestedTheme="Default" 
-                        Background="{ThemeResource SystemControlBackgroundBaseLowBrush}"
+            <CommandBar Grid.Row="1"
+                        VerticalContentAlignment="Center"
+                        HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" RequestedTheme="Default"
+                        OverflowButtonVisibility="Collapsed"
                         >
-                <AppBarButton Width="35" Height="35"
-                              VerticalAlignment="Center"
-                              Margin="5 0 10 0"
-                              CornerRadius="25"
-                              Background="DarkRed"
+                <AppBarButton Width="50"
+                              Icon="Add"
+                              Background="{ThemeResource InkToolbarButtonHoverBackgroundThemeBrush}"
                               >
                     <AppBarButton.Flyout>
                         <MenuFlyout>
                             <MenuFlyoutItem Text="Local File" 
                                             Click="MenuFlyoutItem_Click"
-                                            Tag="localFile"/>
-                            <MenuFlyoutItem Text="Local Camera" 
+                                            Tag="LocalFile"/>
+                            <MenuFlyoutItem Text="Local Front Camera" 
                                             Click="MenuFlyoutItem_Click"
-                                            Tag="localCamera"/>
+                                            Tag="LocalFrontCamera"/>
+                            <MenuFlyoutItem Text="Local Back Camera" 
+                                            Click="MenuFlyoutItem_Click"
+                                            Tag="LocalBackCamera"/>
                             <MenuFlyoutSeparator />
                             <MenuFlyoutItem Text="Online Stream" 
                                             Click="MenuFlyoutItem_Click"
-                                            Tag="onlineStream"/>
+                                            Tag="OnlineStream"/>
                             <MenuFlyoutItem Text="IP Camera" 
                                             Click="MenuFlyoutItem_Click"
-                                            Tag="ipCamera"/>
+                                            Tag="IPCamera"/>
                         </MenuFlyout>
                     </AppBarButton.Flyout>
                 </AppBarButton>
-                <Button Style="{StaticResource ButtonRevealStyle}" Height="30" MinWidth="70"
-                        Content="{  x:Bind VM.PreviewScene.Sources[0].Type,
-                                    Mode=OneWay, 
-                                    FallbackValue='Select a scene'
-                        }">
-                    <Button.Flyout>
+                <AppBarButton Margin="5 0 5 0"
+                              VerticalAlignment="Center"
+                              MinWidth="100"
+                              Content="{  x:Bind VM.PreviewScene.Sources[0].Type,
+                                            Mode=OneWay, 
+                                            FallbackValue='Select a scene'}">
+                    <AppBarButton.Flyout>
                         <Flyout>
                             <StackPanel>
                                 <TextBlock Style="{ThemeResource BaseTextBlockStyle}" 
                                            Text="Sure you wan't to delete source?" />
                                 <Button Content="Remove"
                                         Command="{x:Bind VM.RemoveSourceFromPreviewSceneCommand}"
-                                        CommandParameter="{x:Bind VM.PreviewScene.Sources[0]}" />
+                                        CommandParameter="{ x:Bind VM.PreviewScene.Sources[0], 
+                                                            Mode=OneWay}" 
+                                        HorizontalAlignment="Center"
+                                        Margin="0 10 0 0"
+                                        Style="{ThemeResource AccentButtonStyle}"/>
                             </StackPanel>
                         </Flyout>
-                    </Button.Flyout>
-                </Button>
-            </StackPanel>
-            
+                    </AppBarButton.Flyout>
+                </AppBarButton>
+                <AppBarSeparator />
+                <AppBarButton x:Name="SendToLiveButton" 
+                              Margin="5 0 0 0"
+                              Content="Send to Live"
+                              Width="100"
+                              HorizontalAlignment="Right"
+                              Background="{ThemeResource SystemAccentColor}"
+                              Command="{x:Bind VM.SetLiveSceneCommand}"
+                              CommandParameter="{x:Bind VM.PreviewScene, Mode=OneWay}"
+                              Visibility="Collapsed"/>
+            </CommandBar>
+
         </Grid>
-        
-        <!-- Text and such for debugging purposes TODO remove-->
-        <TextBlock Grid.Row="1" Grid.Column="1"
-                   Text="{x:Bind VM.PreviewScene.Sources[0].Type, 
-                            Mode=OneWay,
-                            FallbackValue='Select a scene'}"></TextBlock>
-        
+
+        <!-- #endregion -->
+
+        <!-- #region Playlist view -->
+
+        <StackPanel Orientation="Horizontal"
+                    Grid.Column="1" 
+                    Grid.Row="1">
+
+            <!-- List of scenes in playlist -->
+            <StackPanel Orientation="Vertical"
+                        Margin="20 15 0 0"
+                        BorderBrush="{ThemeResource SystemControlHighlightTransparentRevealBorderBrush}"
+                        BorderThickness="1"
+                        CornerRadius="15">
+                
+                <TextBlock Text="Playlist"
+                           Margin="20 15 0 10"
+                           FontSize="22"
+                           FontWeight="Bold"/>
+                <ListView
+                    x:Name="PlaylistListView"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Height="400" 
+                    MinWidth="200"
+                    MaxWidth="300"
+                    Margin="0 0 0 0"
+                    Padding="10"
+                    SelectionMode="Single"
+                    CanDragItems="True" 
+                    CanReorderItems="True" 
+                    AllowDrop="True"
+                    SelectionChanged="PlaylistListView_SelectionChanged"
+                    ItemsSource="{x:Bind VM.PlaylistScenes}"
+                    ItemTemplate="{StaticResource playListviewTemplate}">
+
+                </ListView>
+            </StackPanel>
+
+            <!-- More info panel -->
+            <StackPanel x:Name="PlaylistInfopanel"
+                        Orientation="Vertical"
+                        VerticalAlignment="Top"
+                        Width="300"
+                        Height="200"
+                        Margin="10 60 0 0"
+                        Visibility="Collapsed" 
+                        Opacity="0"
+                        RenderTransformOrigin="0.5,0.5">
+
+                <StackPanel.RenderTransform>
+                    <CompositeTransform x:Name="PanelCompositeTransform"/>
+                </StackPanel.RenderTransform>
+                
+                <TextBlock Text="Details"
+                           FontSize="16">
+                    
+                </TextBlock>
+
+                <TextBlock Text="How long should scene play?"
+                           HorizontalAlignment="Left"/>
+
+                <TextBox x:Name="InputTimeTextbox" 
+                         Width="100"
+                         Height="30"
+                         Margin="0 5 0 0"
+                         HorizontalAlignment="Left"
+                         TextChanged="TextBox_TextChanged" />
+
+                <CheckBox Content="Should play until Scene finished"
+                          HorizontalAlignment="Left"
+                          Margin="0 5"
+                          Checked="CheckBox_Checked"
+                          Unchecked="CheckBox_Unchecked" />
+            </StackPanel>
+
+        </StackPanel>
+        <!-- #endregion -->
+
     </Grid>
 </Page>
