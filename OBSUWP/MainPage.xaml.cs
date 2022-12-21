@@ -35,6 +35,7 @@ namespace OBSUWP
         private void GridView_ItemClick(object sender, ItemClickEventArgs e)
         {
             VM.PreviewScene = (Scene)e.ClickedItem;
+            SendToLiveButton.Visibility = Visibility.Visible;
         }
 
         /// <summary>
