@@ -324,6 +324,19 @@ namespace OBSUWP
 
         }
 
+        // Set the live scene
+        [RelayCommand]
+        private void SetLiveScene(Scene scene)
+        {
+            if (scene != null)
+            {
+                liveScene = scene;
+            } else if (liveScene == null)
+            {
+                liveScene = null;
+            }
+        }
+
         #endregion
 
 

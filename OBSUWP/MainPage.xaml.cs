@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using OBSUWP.DataClasses;
 using System;
+using System.Diagnostics;
 using System.Numerics;
 using Windows.UI.Composition;
 using Windows.UI.Xaml;
@@ -18,8 +19,11 @@ namespace OBSUWP
     {
         internal MainPageViewModel VM { get; }
 
-        // save rightclicked scene as context for scene deleted flyout click handler
+        // rightclicked scene as context for scene deleted flyout click handler
         private Scene rightClickedScene { get; set; }
+
+        // selected Scene in the Playlist UI
+        private Scene playlistSelectedScene; // TODO: methods to save and update this
 
         // Animation of the infopanel
         private Storyboard infopanelStoryboard = new Storyboard();
@@ -130,15 +134,21 @@ namespace OBSUWP
 
         private async void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
+
+            TextBox tb = (TextBox)sender;
+            string inputString = tb.Text;
+
             try
             {
-                
-            }
-            catch (Exception)
-            {
+                int inputInt = int.Parse(inputString);
+                VM.SetTimeCommand.Execute(new Tuple<Scene, int?>(playlistSelectedScene, inputInt));
 
-                throw;
             }
+            catch (FormatException)
+            {
+                Debug.WriteLine("Cannot parse string to integer in textbox");
+            }
+
         }
 
         private void CheckBox_Checked(object sender, RoutedEventArgs e)

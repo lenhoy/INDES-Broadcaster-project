@@ -149,7 +149,7 @@
                 </AppBarButton>
                 <AppBarButton Margin="5 0 5 0"
                               VerticalAlignment="Center"
-                              MinWidth="80"
+                              MinWidth="100"
                               Content="{  x:Bind VM.PreviewScene.Sources[0].Type,
                                             Mode=OneWay, 
                                             FallbackValue='Select a scene'}">
@@ -176,6 +176,8 @@
                               Width="100"
                               HorizontalAlignment="Right"
                               Background="{ThemeResource SystemAccentColor}"
+                              Command="{x:Bind VM.SetLiveSceneCommand}"
+                              CommandParameter="{x:Bind VM.PreviewScene, Mode=OneWay}"
                               Visibility="Collapsed"/>
             </CommandBar>
 
